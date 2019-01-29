@@ -353,7 +353,7 @@ fgallery's GIT repository is publicly accessible at::
 
   git://src.thregr.org/fgallery
 
-or at https://github.com/wavexx/fgallery
+or at https://gitlab.com/wavexx/fgallery
 
 
 Extending fgallery
