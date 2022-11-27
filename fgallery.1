@@ -1,4 +1,4 @@
-.Dd 2015-11-30
+.Dd 2022-11-27
 .Dt FGALLERY 1
 .\" (C) Copyright 2015 Guus Sliepen <guus@debian.org>,
 .Sh NAME
@@ -6,7 +6,7 @@
 .Nd static HTML+JavaScript photo album generator
 .Sh SYNOPSIS
 .Nm
-.Op Fl hvsiotrpdf
+.Op Fl hvsioktrpdf
 .Op Fl c Ar methods
 .Op Fl j Ar N
 .Op Fl -max-full Ar WxH
@@ -90,6 +90,8 @@ Slim output (no original files and downloads).
 Include individual originals in the generated album.
 .It Fl o
 Do not auto-orient images.
+.It Fl k
+Do not modify source files, keep originals.
 .It Fl t
 Do not sort images on time.
 .It Fl r

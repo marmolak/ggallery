@@ -348,7 +348,7 @@ sub print_help
   -i			include individual originals
   -c methods		caption extraction methods (txt,xmp,exif,cmt or none)
   -o			do not auto-orient
-  -k			do not modify files, keep original
+  -k			do not modify source files, keep originals
   -t			do not time-sort
   -r			reverse album order
   -p			do not automatically include full-sized panoramas
