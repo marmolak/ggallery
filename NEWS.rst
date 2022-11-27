@@ -1,3 +1,21 @@
+fgallery 1.8.3: 2022-
+--------------------------
+
+* A new flag `-k` allows to include the original files as-is, disabling
+  all (lossless) transformations. Thanks to Rainer Müller.
+* Handle gray-scale source images without failing during conversion.
+* Handle UTF8 characters and whitespace in command-line arguments.
+* Improve default locale handling for text captions.
+* Speed-up the generation progress by avoiding copies when possible.
+* Fix an error potentially occurring when the source gallery includes
+  extra (non-image) files. Thanks to Alex Schroeder.
+* Update ``fcaption`` to Python3/PyQt5. Thanks to Chris Drexler.
+* ``fcaption`` now sorts the input images by the file name, matching the
+  default ``fgallery`` order. Thanks to Tom Conlin.
+* Support ``7zz`` (from the new `7zip` package) in addition to `7za` for
+  archive generation.
+
+
 fgallery 1.8.2: 2016-05-25
 --------------------------
 
