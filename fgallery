@@ -23,6 +23,7 @@ use File::Basename qw{fileparse};
 use File::Find qw{find};
 use File::Path qw{make_path remove_tree};
 use File::Spec::Functions qw{rel2abs};
+use File::Temp;
 use FindBin qw{$RealBin};
 use Getopt::Long qw{:config bundling};
 use IO::Handle;
@@ -805,8 +806,24 @@ if(!$nodown && !$slim)
   my @files = map { "$out/$_->{'file'}[0]" } @adata;
 
   if(!$p7zip) {
-    sys('zip', '-q9j', "$out/$fdownload", @files);
-  } else
+    # pass the file list via stdin to avoid cmdline limits
+    my @cmd = ('zip', '-@q9j', "$out/$fdownload");
+
+    if($verbose) {
+      print(STDERR "+ " . join(" ", @cmd) . "\n")
+    }
+    my $fd;
+    unless(open($fd, '|-', @cmd)) {
+      fatal("cannot execute \"$cmd[0]\"");
+    }
+    for my $file(@files) {
+      print($fd "$file\n");
+    }
+    unless(close($fd)) {
+      fatal("command \"@cmd\" failed");
+    }
+  }
+  else
   {
     # make paths explicitly absolute/relative to strip file path info with 7za
     my $dot = substr($out, 0, 1);
@@ -814,8 +831,16 @@ if(!$nodown && !$slim)
       @files = map { "./$_" } @files;
     }
 
+    # build a temporary file list as 7zz/7za can't read stdin
+    my $ftmp = File::Temp->new();
+    binmode($ftmp, ":encoding($ENCODING)");
+    for my $file(@files) {
+      print($ftmp "$file\n");
+    }
+    close($ftmp);
+
     my @mt = $workers? ("-mmt=$workers"): ();
-    sys($p7zipcmd, '-tzip', @mt, 'a', '--', "$out/$fdownload", @files);
+    sys($p7zipcmd, '-tzip', @mt, "-i\@$ftmp", 'a', '--', "$out/$fdownload");
   }
 }
 
