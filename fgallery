@@ -672,8 +672,8 @@ sub process_img
       sys('jpegoptim', '-q', $fout);
     } elsif($pngoptim && $props{FileType} eq "PNG")
     {
-      # pngcrush cain fail stupidly producing a zero-length file with a
-      # successful exit code. this can happen for invalid sRGB profiles.
+      # pngcrush can fail stupidly producing a zero-length file with a
+      # successful exit code. This can happen for invalid sRGB profiles.
       # Ignore the zero-length output in such cases.
       sys('pngcrush', '-q', $fout, $ftmp);
       if(-s $ftmp) {
