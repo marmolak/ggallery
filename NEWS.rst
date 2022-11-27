@@ -5,6 +5,7 @@ fgallery 1.8.3: 2022-
   all (lossless) transformations. Thanks to Rainer Müller.
 * Handle gray-scale source images without failing during conversion.
 * Handle UTF8 characters and whitespace in command-line arguments.
+* Handle abnormal pngcrush failures with bad sRGB profiles.
 * Improve default locale handling for text captions.
 * Speed-up the generation progress by avoiding copies when possible.
 * Fix an error potentially occurring when the source gallery includes
