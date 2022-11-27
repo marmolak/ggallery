@@ -47,8 +47,7 @@ and then navigate to http://localhost:8000.
 Pre-built packages
 ------------------
 
-Pre-built packages for `fgallery` (and `facedetect`) are available on
-Testing/Unstable:
+Pre-built packages for `fgallery` (and `facedetect`) are available:
 
 **Debian/Ubuntu**
 
