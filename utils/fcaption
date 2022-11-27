@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 # fcaption: simple image caption editor
-# Copyright(c) 2015-2016 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
-from __future__ import unicode_literals, generators, print_function
-
+# Copyright(c) 2015-2022 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
 import os, sys
 import argparse
 import locale
@@ -13,9 +10,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 APP_DESC = "fgallery image caption editor"
 ENCODING = locale.getpreferredencoding()
 FILE_EXT = ["jpg", "jpeg", "png", "tif", "tiff"]
-
-if sys.version_info.major < 3:
-    str = unicode
 
 
 class ScaledImage(QtWidgets.QLabel):
