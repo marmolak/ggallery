@@ -10,6 +10,7 @@ fgallery 1.8.3: 2022-
 * Speed-up the generation progress by avoiding copies when possible.
 * Fix an error potentially occurring when the source gallery includes
   extra (non-image) files. Thanks to Alex Schroeder.
+* Fix a typo in the man page thanks to Robin Paulson.
 * Update ``fcaption`` to Python3/PyQt5. Thanks to Chris Drexler.
 * ``fcaption`` now sorts the input images by the file name, matching the
   default ``fgallery`` order. Thanks to Tom Conlin.
