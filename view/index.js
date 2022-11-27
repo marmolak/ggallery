@@ -1,5 +1,5 @@
 // fgallery: a modern, minimalist javascript photo gallery
-// Copyright(c) 2011-2016 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
+// Copyright(c) 2011-2022 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
 // Distributed under GPLv2+ (see COPYING) WITHOUT ANY WARRANTY.
 "use strict";
 
@@ -369,7 +369,7 @@ function umod(i, m)
 
 function resetTimeout(id)
 {
-  if(id) clearTimeout(id)
+  if(id) clearTimeout(id);
   return null;
 }
 
@@ -487,7 +487,7 @@ function onMainReady()
   else
   {
     var cap = imgs.data[eidx]['caption'];
-    ecap.eidx = eidx
+    ecap.eidx = eidx;
     ecap.empty();
     if(cap[0].length)
       ecap.adopt(new Element('div', { 'id': 'title', 'text': cap[0] }));
@@ -724,16 +724,16 @@ function initGallery(data)
 
   eleft = new Element('a', { id: 'left' });
   eleft.adopt((new Element('div')).adopt(new Element('img', { 'src': 'left.png' })));
-  eleft.set('tween', { link: 'ignore' })
+  eleft.set('tween', { link: 'ignore' });
   eleft.inject(econt);
 
   eright = new Element('a', { id: 'right' });
   eright.adopt((new Element('div')).adopt(new Element('img', { 'src': 'right.png' })));
-  eright.set('tween', { link: 'ignore' })
+  eright.set('tween', { link: 'ignore' });
   eright.inject(econt);
 
   ehdr = new Element('div', { id: 'header' });
-  ehdr.set('tween', { link: 'ignore' })
+  ehdr.set('tween', { link: 'ignore' });
   ehdr.inject(econt);
 
   elist = new Element('div', { id: 'list' });
