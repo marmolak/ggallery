@@ -418,13 +418,6 @@ if(system("identify -version >/dev/null 2>&1")
 || system("convert -version >/dev/null 2>&1")) {
   fatal("cannot run \"identify\" or \"convert\" (check if ImageMagick is installed)");
 }
-if(system("7za -h >/dev/null 2>&1"))
-{
-  $p7zip = 0;
-  if(system("zip -h >/dev/null 2>&1")) {
-    fatal("cannot run \"zip\" (check if 7za or zip is installed)");
-  }
-}
 if(system("jpegoptim -V >/dev/null 2>&1")) {
   $jpegoptim = 0;
 }
@@ -433,6 +426,18 @@ if(system("pngcrush -h >/dev/null 2>&1")) {
 }
 if($facedet && system("facedetect -h >/dev/null 2>&1")) {
   fatal("cannot run \"facedetect\" (see https://www.thregr.org/~wavexx/software/facedetect/)");
+}
+
+my $p7zipcmd;
+if(!system("7zz -h >/dev/null 2>&1")) {
+  $p7zipcmd = "7zz";
+} elsif(!system("7za -h >/dev/null 2>&1")) {
+  $p7zipcmd = "7za";
+} else {
+  $p7zip = 0;
+  if(system("zip -h >/dev/null 2>&1")) {
+    fatal("cannot run \"zip\" (check if 7zz, 7za or zip is installed)");
+  }
 }
 
 my $tificccmd;
@@ -805,7 +810,7 @@ if(!$nodown && !$slim)
     }
 
     my @mt = $workers? ("-mmt=$workers"): ();
-    sys('7za', '-tzip', @mt, 'a', '--', "$out/$fdownload", @files);
+    sys($p7zipcmd, '-tzip', @mt, 'a', '--', "$out/$fdownload", @files);
   }
 }
 

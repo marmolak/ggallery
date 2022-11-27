@@ -303,7 +303,7 @@ Therefore it's also helpful to install:
 * jpegoptim (http://www.kokkonen.net/tjko/projects.html, for JPEG size optimization)
 * pngcrush (http://pmt.sourceforge.net/pngcrush/, for PNG size optimization)
 * facedetect (https://www.thregr.org/~wavexx/software/facedetect/, for face detection)
-* p7zip (http://www.7-zip.org/, for faster and higher-compression zip archiving)
+* 7zip (http://www.7-zip.org/, for faster and higher-compression zip archiving)
 
 On Debian/Ubuntu, you can install all the required dependencies with::
 
@@ -313,7 +313,7 @@ On Debian/Ubuntu, you can install all the required dependencies with::
 To save more space in the generated galleries, we recommend installing also the
 optional dependencies::
 
-  sudo apt-get install jpegoptim pngcrush p7zip
+  sudo apt-get install jpegoptim pngcrush 7zip
 
 ``fcaption`` is written in Python and requires PyQT5. You can install the
 required packages with::
