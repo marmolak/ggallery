@@ -675,7 +675,7 @@ sub process_img
       # pngcrush can fail stupidly producing a zero-length file with a
       # successful exit code. This can happen for invalid sRGB profiles.
       # Ignore the zero-length output in such cases.
-      sys('pngcrush', '-q', $fout, $ftmp);
+      sys('pngcrush', '-s', $fout, $ftmp);
       if(-s $ftmp) {
 	rename($ftmp, $fout);
       }
