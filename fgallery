@@ -516,7 +516,8 @@ sub analyze_file
   progress::status("$base.$suffix");
 
   my $props = ImageInfo($file, {PrintConv => 0, Sort => 'File'});
-  unless(defined($props) && isin($props->{FileType}, @filetypes)) {
+  unless(defined($props) && defined($props->{FileType})
+  && isin($props->{FileType}, @filetypes)) {
     return undef;
   }
 
