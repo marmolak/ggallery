@@ -5,7 +5,10 @@ import os, sys
 import argparse
 import locale
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    from PyQt6 import QtCore, QtGui, QtWidgets
+except ImportError:
+    from PyQt5 import QtCore, QtGui, QtWidgets
 
 APP_DESC = "fgallery image caption editor"
 ENCODING = locale.getpreferredencoding()
@@ -20,13 +23,17 @@ class ScaledImage(QtWidgets.QLabel):
     def setPixmap(self, pixmap):
         self._pixmap = pixmap
         if not pixmap.isNull():
-            pixmap = pixmap.scaled(self.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(self.size(),
+                                   QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                   QtCore.Qt.TransformationMode.SmoothTransformation)
         super(ScaledImage, self).setPixmap(pixmap)
 
     def resizeEvent(self, ev):
         super(ScaledImage, self).resizeEvent(ev)
         if not self._pixmap.isNull():
-            pixmap = self._pixmap.scaled(self.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            pixmap = self._pixmap.scaled(self.size(),
+                                         QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                         QtCore.Qt.TransformationMode.SmoothTransformation)
             super(ScaledImage, self).setPixmap(pixmap)
 
 
@@ -41,8 +48,8 @@ class BackgroundLoader(QtCore.QThread):
         self.image = QtGui.QImage(self.path)
         if not self.image.isNull() and self.size:
             self.image = self.image.scaled(self.size,
-                                           QtCore.Qt.KeepAspectRatio,
-                                           QtCore.Qt.SmoothTransformation)
+                                           QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                                           QtCore.Qt.TransformationMode.SmoothTransformation)
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -51,33 +58,37 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(APP_DESC)
 
         # construct UI
-        horizontalSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        verticalSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        horizontalSplitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
+        verticalSplitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Vertical)
         self.image = ScaledImage()
         self.image.setMinimumSize(480, 319)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         self.image.setSizePolicy(sizePolicy)
-        self.image.setAlignment(QtCore.Qt.AlignCenter)
+        self.image.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         verticalSplitter.addWidget(self.image)
         horizontalLayout = QtWidgets.QHBoxLayout()
         formLayout = QtWidgets.QFormLayout()
-        formLayout.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, QtWidgets.QLabel("Title:"))
+        formLayout.setLabelAlignment(QtCore.Qt.AlignmentFlag.AlignRight |
+                                     QtCore.Qt.AlignmentFlag.AlignTrailing |
+                                     QtCore.Qt.AlignmentFlag.AlignVCenter)
+        formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, QtWidgets.QLabel("Title:"))
         self.edit_title = QtWidgets.QLineEdit()
-        formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.edit_title)
-        formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, QtWidgets.QLabel("Description:"))
+        formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.edit_title)
+        formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole, QtWidgets.QLabel("Description:"))
         self.edit_desc = QtWidgets.QPlainTextEdit()
-        self.edit_desc.setLineWrapMode(QtWidgets.QPlainTextEdit.WidgetWidth)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        self.edit_desc.setLineWrapMode(QtWidgets.QPlainTextEdit.LineWrapMode.WidgetWidth)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         self.edit_desc.setSizePolicy(sizePolicy)
-        formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.edit_desc)
+        formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.edit_desc)
         horizontalLayout.addLayout(formLayout)
         verticalLayout = QtWidgets.QVBoxLayout()
-        verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)
+        verticalLayout.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetMinimumSize)
         self.btn_next = QtWidgets.QPushButton("&Next")
         verticalLayout.addWidget(self.btn_next)
         self.btn_undo = QtWidgets.QPushButton("&Undo")
@@ -258,4 +269,4 @@ class Application(QtWidgets.QApplication):
 
 if __name__ == '__main__':
     app = Application(sys.argv)
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

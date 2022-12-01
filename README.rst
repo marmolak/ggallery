@@ -315,10 +315,10 @@ optional dependencies::
 
   sudo apt-get install jpegoptim pngcrush 7zip
 
-``fcaption`` is written in Python and requires PyQT5. You can install the
-required packages with::
+``fcaption`` is written in Python and requires either PyQt6 or PyQt5.
+You can install the required packages with::
 
-  sudo apt-get install python3-pyqt5
+  sudo apt-get install python3-pyqt6
 
 For face detection support, simply follow the `facedetect installation
 instructions <https://www.thregr.org/~wavexx/software/facedetect/#dependencies>`_.

@@ -13,7 +13,8 @@ fgallery 1.9: 2022-
 * Fix a typo in the man page thanks to Robin Paulson.
 * Do not fail when producing the zip archive on galleries that have a
   lot of images or long file names.
-* Update ``fcaption`` to Python3/PyQt5. Thanks to Chris Drexler.
+* Update ``fcaption`` to Python3 and support both PyQt6 or PyQt5.
+  Thanks to Chris Drexler for the Qt5 support.
 * ``fcaption`` now sorts the input images by the file name, matching the
   default ``fgallery`` order. Thanks to Tom Conlin.
 * Support ``7zz`` (from the new `7zip` package) in addition to ``7za``
