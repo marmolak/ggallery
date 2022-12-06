@@ -1,5 +1,5 @@
-fgallery 1.9: 2022-
---------------------------
+fgallery 1.9: 2022-12-06
+------------------------
 
 * A new flag `-k` allows to include the original files as-is, disabling
   all (lossless) transformations. Thanks to Rainer Müller.
