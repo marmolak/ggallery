@@ -40,6 +40,15 @@ $JSON_cls->import(qw{encode_json});
 our $VERSION = "1.9";
 our $ENCODING = encoding::_get_locale_encoding() || 'UTF-8';
 
+# identify our data directory
+our $DATADIR;
+for my $dir("$RealBin/../share/fgallery", $RealBin) {
+  if(-d $dir) {
+    $DATADIR = $dir;
+    last;
+  }
+}
+
 # defaults
 my $mode = 0644;
 my $slim = 0;
@@ -409,7 +418,7 @@ if(!-d $dir) {
 } elsif(substr($absOut, 0, length($absDir)) eq $absDir) {
   fatal("output directory is a sub-directory of input, refusing to scan");
 } elsif(!-d $out) {
-  sys('cp', '-L', '-R', "$RealBin/view", $out);
+  sys('cp', '-L', '-R', "$DATADIR/view", $out);
 } elsif(!-f "$out/index.html") {
   fatal("output directory already exists, but doesn't look like a template copy");
 }
