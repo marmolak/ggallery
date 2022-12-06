@@ -19,6 +19,8 @@ fgallery 1.9: 2022-
   default ``fgallery`` order. Thanks to Tom Conlin.
 * Support ``7zz`` (from the new `7zip` package) in addition to ``7za``
   for archive generation.
+* A new simple Makefile is provided to install ``fgallery`` and data
+  files into an appropriate prefix.
 
 
 fgallery 1.8.2: 2016-05-25

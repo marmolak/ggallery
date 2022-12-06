@@ -333,11 +333,11 @@ On a Mac, we recommend installing the dependencies using `MacPorts
 Installation
 ------------
 
-Installation is currently optional. If needed, copy the extracted directory to
-a directory of your liking and link `fgallery` appropriately::
+Installation is currently optional. `fgallery` can be run from the
+source directory directly. A simple ``Makefile`` is provided to install
+the required data files into the appropriate prefix::
 
-  sudo cp -r fgallery-X.Y /usr/local/share/fgallery
-  sudo ln -s /usr/local/share/fgallery/fgallery /usr/local/bin
+  sudo make install install_fcaption PREFIX=/usr/local
 
 
 Authors and Copyright
