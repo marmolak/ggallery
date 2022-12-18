@@ -39,7 +39,7 @@ same-origin restrictions). If you have python installed, a quick way to test
 the gallery locally is to run::
 
   cd my-gallery
-  python -m SimpleHTTPServer 8000
+  python3 -m http.server
 
 and then navigate to http://localhost:8000.
 
