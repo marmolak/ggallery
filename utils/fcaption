@@ -38,15 +38,16 @@ class ScaledImage(QtWidgets.QLabel):
 
 
 class BackgroundLoader(QtCore.QThread):
-    def __init__(self, path, size):
+    def __init__(self, idx, path, size):
         super(BackgroundLoader, self).__init__()
+        self.idx = idx
         self.path = path
         self.size = size
         self.image = None
 
     def run(self):
         self.image = QtGui.QImage(self.path)
-        if not self.image.isNull() and self.size:
+        if not self.image.isNull():
             self.image = self.image.scaled(self.size,
                                            QtCore.Qt.AspectRatioMode.KeepAspectRatio,
                                            QtCore.Qt.TransformationMode.SmoothTransformation)
@@ -116,6 +117,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # initial state
         self.files = list()
         self.missing_thumbs = list()
+        self.thumb_thread = None
         self.current = 0
         self.modified = False
 
@@ -134,22 +136,25 @@ class MainWindow(QtWidgets.QMainWindow):
     def on_undo(self, ev):
         self.load(self.current)
 
-    def thumb_ready(self, thread, idx, path):
-        icon = thread.image
-        if not icon.isNull():
+    def thumb_ready(self):
+        idx = self.thumb_thread.idx
+        image = self.thumb_thread.image
+        if not image.isNull():
             crow = self.list_files.currentRow()
             item = self.list_files.takeItem(idx)
-            item.setIcon(QtGui.QIcon(QtGui.QPixmap(icon)))
+            item.setIcon(QtGui.QIcon(QtGui.QPixmap(image)))
             self.list_files.insertItem(idx, item)
             self.list_files.setCurrentRow(crow)
         self.thumb_schedule()
 
     def thumb_schedule(self):
-        if not self.missing_thumbs: return
+        if not self.missing_thumbs:
+            self.thumb_thread = None
+            return
         idx, path = self.missing_thumbs.pop(0)
-        thread = BackgroundLoader(path, self.list_files.iconSize())
-        thread.finished.connect(lambda: self.thumb_ready(thread, idx, path))
-        thread.start()
+        self.thumb_thread = BackgroundLoader(idx, path, self.list_files.iconSize())
+        self.thumb_thread.finished.connect(self.thumb_ready)
+        self.thumb_thread.start()
 
     def set_files(self, files):
         self.files = list(files)
