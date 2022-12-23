@@ -37,20 +37,25 @@ class ScaledImage(QtWidgets.QLabel):
             super(ScaledImage, self).setPixmap(pixmap)
 
 
-class BackgroundLoader(QtCore.QThread):
+class ThumbSignals(QtCore.QObject):
+    ready = QtCore.pyqtSignal(int, QtGui.QImage)
+
+class ThumbLoader(QtCore.QRunnable):
     def __init__(self, idx, path, size):
-        super(BackgroundLoader, self).__init__()
+        super(ThumbLoader, self).__init__()
         self.idx = idx
         self.path = path
         self.size = size
-        self.image = None
+        self.signals = ThumbSignals()
 
     def run(self):
-        self.image = QtGui.QImage(self.path)
-        if not self.image.isNull():
-            self.image = self.image.scaled(self.size,
-                                           QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-                                           QtCore.Qt.TransformationMode.SmoothTransformation)
+        image = QtGui.QImage(self.path)
+        if not image.isNull():
+            scaled = image.scaled(
+                self.size,
+                QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                QtCore.Qt.TransformationMode.SmoothTransformation)
+            self.signals.ready.emit(self.idx, scaled)
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -116,10 +121,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # initial state
         self.files = list()
-        self.missing_thumbs = list()
-        self.thumb_thread = None
         self.current = 0
         self.modified = False
+        self.thumb_pool = QtCore.QThreadPool()
+        self.thumb_pool.setMaxThreadCount(max(1, self.thumb_pool.maxThreadCount() // 4))
 
     def on_next(self, ev):
         if self.modified: self.save()
@@ -136,30 +141,27 @@ class MainWindow(QtWidgets.QMainWindow):
     def on_undo(self, ev):
         self.load(self.current)
 
-    def thumb_ready(self):
-        idx = self.thumb_thread.idx
-        image = self.thumb_thread.image
-        if not image.isNull():
-            crow = self.list_files.currentRow()
-            item = self.list_files.takeItem(idx)
-            item.setIcon(QtGui.QIcon(QtGui.QPixmap(image)))
-            self.list_files.insertItem(idx, item)
-            self.list_files.setCurrentRow(crow)
-        self.thumb_schedule()
+    def thumb_ready(self, idx, image):
+        crow = self.list_files.currentRow()
+        item = self.list_files.takeItem(idx)
+        item.setIcon(QtGui.QIcon(QtGui.QPixmap(image)))
+        self.list_files.insertItem(idx, item)
+        self.list_files.setCurrentRow(crow)
 
     def thumb_schedule(self):
-        if not self.missing_thumbs:
-            self.thumb_thread = None
-            return
-        idx, path = self.missing_thumbs.pop(0)
-        self.thumb_thread = BackgroundLoader(idx, path, self.list_files.iconSize())
-        self.thumb_thread.finished.connect(self.thumb_ready)
-        self.thumb_thread.start()
+        size = self.list_files.iconSize()
+        for idx, path in enumerate(self.files):
+            thread = ThumbLoader(idx, path, size)
+            thread.signals.ready.connect(self.thumb_ready)
+            self.thumb_pool.start(thread)
+
+    def thumb_stop(self):
+        self.thumb_pool.clear()
+        self.thumb_pool.waitForDone()
 
     def set_files(self, files):
         self.files = list(files)
         self.list_files.clear()
-        self.missing_thumbs = list(enumerate(files))
         for path in files:
             self.list_files.addItem(os.path.basename(path))
         if len(files) < 2:
@@ -222,6 +224,7 @@ class MainWindow(QtWidgets.QMainWindow):
             open(txt, 'wb').write(data.encode(ENCODING))
 
     def closeEvent(self, ev):
+        self.thumb_stop()
         if self.modified: self.save()
         super(MainWindow, self).closeEvent(ev)
 
