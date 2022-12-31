@@ -10,7 +10,8 @@ try:
 except ImportError:
     from PyQt5 import QtCore, QtGui, QtWidgets
 
-APP_DESC = "fgallery image caption editor"
+APP_DSC = "fgallery image caption editor"
+APP_VER = "1.9.1"
 ENCODING = locale.getpreferredencoding()
 FILE_EXT = ["jpg", "jpeg", "png", "tif", "tiff"]
 
@@ -61,7 +62,7 @@ class ThumbLoader(QtCore.QRunnable):
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setWindowTitle(APP_DESC)
+        self.setWindowTitle(APP_DSC)
 
         # construct UI
         horizontalSplitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
@@ -247,7 +248,8 @@ class Application(QtWidgets.QApplication):
         super(Application, self).__init__(args)
 
         # command-line flags
-        ap = argparse.ArgumentParser(description=APP_DESC)
+        ap = argparse.ArgumentParser(description=APP_DSC)
+        ap.add_argument('--version', action='version', version=APP_VER)
         ap.add_argument('files', metavar="image", nargs='*',
                         help='image or directory to caption')
         args = ap.parse_args(map(str, args[1:]))
