@@ -1,3 +1,10 @@
+fgallery 1.9.1: 2022-12-31
+--------------------------
+
+* Improved ``fcaption`` multi-threading support.
+* Fix occasional ``fcaption`` crash when using PyQt6.
+
+
 fgallery 1.9: 2022-12-06
 ------------------------
 
