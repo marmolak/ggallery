@@ -78,12 +78,12 @@ my $indexUrl = undef;
 my @capmethods = ("txt", "xmp", "exif");
 
 my $dogeo = 0;
-my $geobaseurl = "http://osm.org";
+my $geobaseurl = "https://openstreetmap.org/";
 my $geozoom = 17;
 # This format string works with OSM
 # In case this should be adapted to other map providers a more
 # sophisticated format parsing than just sprintf() would be needed
-my $geodefaultformat = "%s?zoom=%i&lat=%-10.9g&lon=%-10.9g";
+my $geodefaultformat = "%s#map=%i/%-.5f/%-.5f";
 
 
 # support functions
