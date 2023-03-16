@@ -74,7 +74,7 @@ my $p7zip = 1;
 my $verbose = 0;
 my $workers = 0;
 my $sRGB = 1;
-my $indexUrl = undef;
+my $indexurl = undef;
 my @capmethods = ("txt", "xmp", "exif");
 
 my $dogeo = 0;
@@ -410,7 +410,7 @@ my ($ret, @ARGS) = GetOptions(
   'min-thumb=s' => sub { @minthumb = parse_wh(@_); },
   'no-sRGB' => sub { $sRGB = 0; },
   'quality=i' => sub { $imgq = parse_int($_[0], $_[1], 0, 100); },
-  'index=s' => sub { $indexUrl = $_[1]; },
+  'index=s' => sub { $indexurl = $_[1]; },
   'geo-base=s' => sub { $geobaseurl = $_[1]; $dogeo = 1; },
   'geo-zoom=i' => sub { $geozoom = parse_int($_[0], $_[1], 0, 19); $dogeo = 1; });
 
@@ -915,7 +915,7 @@ my %json;
 $json{version} = $VERSION;
 $json{name} = $name if($name);
 $json{download} = $fdownload if($fdownload);
-$json{index} = $indexUrl if($indexUrl);
+$json{index} = $indexurl if($indexurl);
 $json{blur} = \@backsize;
 $json{thumb} = { min => \@minthumb, max => \@maxthumb };
 
