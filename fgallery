@@ -75,14 +75,15 @@ my $verbose = 0;
 my $workers = 0;
 my $sRGB = 1;
 my $indexUrl = undef;
+my @capmethods = ("txt", "xmp", "exif");
+
 my $dogeo = 0;
-my $geobaseUrl = "http://osm.org";
-my $geoZoom = 17;
+my $geobaseurl = "http://osm.org";
+my $geozoom = 17;
 # This format string works with OSM
 # In case this should be adapted to other map providers a more
 # sophisticated format parsing than just sprintf() would be needed
-my $defaultgeoformat = "%s?zoom=%i&lat=%-10.9g&lon=%-10.9g";
-my @capmethods = ("txt", "xmp", "exif");
+my $geodefaultformat = "%s?zoom=%i&lat=%-10.9g&lon=%-10.9g";
 
 
 # support functions
@@ -379,8 +380,8 @@ sub print_help
   --no-sRGB		do not remap preview/thumbnail color profiles to sRGB
   --quality Q		preview image quality (0-100, currently: $imgq)
   --index url		specify the URL location for the index/back button
-  --geobase url		specify the URL location geolocation (default: $geobaseUrl)
-  --geozoom z		specify the zoom level of geo maps (default: $geoZoom)
+  --geo-base url	specify the URL location geolocation (default: $geobaseurl)
+  --geo-zoom z		specify the zoom level of geo maps (default: $geozoom)
 });
   exit(shift);
 }
@@ -410,8 +411,8 @@ my ($ret, @ARGS) = GetOptions(
   'no-sRGB' => sub { $sRGB = 0; },
   'quality=i' => sub { $imgq = parse_int($_[0], $_[1], 0, 100); },
   'index=s' => sub { $indexUrl = $_[1]; },
-  'geobase=s' => sub { $geobaseUrl = $_[1]; $dogeo = 1; },
-  'geozoom=i' => sub { $geoZoom = parse_int($_[0], $_[1], 0, 19); $dogeo = 1; });
+  'geo-base=s' => sub { $geobaseurl = $_[1]; $dogeo = 1; },
+  'geo-zoom=i' => sub { $geozoom = parse_int($_[0], $_[1], 0, 19); $dogeo = 1; });
 
 if(@ARGV < 2 || @ARGV > 3 || !$ret) {
   print_help(2);
@@ -571,11 +572,12 @@ sub analyze_file
     $props->{'OrigImageWidth'} = $props->{"ExifImageWidth ($n)"};
     $props->{'OrigImageHeight'} = $props->{"ExifImageHeight ($n)"};
   }
-  if($dogeo) {
-    my $mlat = $props->{"GPSLatitude"};
-    my $mlon = $props->{"GPSLongitude"};
-    if ( $mlat && $mlon ) {
-      $props->{'geourl'} = sprintf($defaultgeoformat, $geobaseUrl, $geoZoom, $mlat, $mlon);
+  if($dogeo)
+  {
+    my $mlat = $props->{"GPSLatitude"} || undef;
+    my $mlon = $props->{"GPSLongitude"} || undef;
+    if (defined($mlat) && defined($mlon)) {
+      $props->{'geourl'} = sprintf($geodefaultformat, $geobaseurl, $geozoom, $mlat, $mlon);
     }
   }
 
