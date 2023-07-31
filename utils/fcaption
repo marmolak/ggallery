@@ -6,9 +6,9 @@ import argparse
 import locale
 
 try:
-    from PyQt6 import QtCore, QtGui, QtWidgets
-except ImportError:
     from PyQt5 import QtCore, QtGui, QtWidgets
+except ImportError:
+    from PyQt6 import QtCore, QtGui, QtWidgets
 
 APP_DSC = "fgallery image caption editor"
 APP_VER = "1.9.1"
