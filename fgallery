@@ -52,6 +52,7 @@ for my $dir("$RealBin/../share/fgallery", $RealBin) {
 # defaults
 my $mode = 0644;
 my $slim = 0;
+my $stripexifmeta = 0;
 my $ofile = 0;
 my $orient = 1;
 my $timesort = 1;
@@ -363,6 +364,7 @@ sub print_help
   --version		output current fgallery version
   -v			verbose (show commands as being executed)
   -s			slim output (no original files and downloads)
+  -e                    strip exif metadata
   -i			include individual originals
   -c methods		caption extraction methods (txt,xmp,exif,cmt or none)
   -o			do not auto-orient
@@ -403,6 +405,7 @@ my ($ret, @ARGS) = GetOptions(
   'p' => sub { $fullpano = 0; },
   'r' => sub { $revsort = 1; },
   's' => sub { $slim = 1; },
+  'e' => sub { $stripexifmeta = 1; },
   't' => sub { $timesort = 0; },
   'v' => sub { $verbose = 1; },
   'max-full=s' => sub { @maxfull = parse_wh(@_); },
@@ -450,6 +453,9 @@ if(system("pngcrush -h >/dev/null 2>&1")) {
 }
 if($facedet && system("facedetect -h >/dev/null 2>&1")) {
   fatal("cannot run \"facedetect\" (see https://www.thregr.org/~wavexx/software/facedetect/)");
+}
+if($stripexifmeta && system("exiftool -ver >/dev/null 2>&1")) {
+  fatal("cannot run \"exiftool\" (check if exiftool is installed)");
 }
 
 my $p7zipcmd;
@@ -836,6 +842,12 @@ if(!$nodown && !$slim)
 
   $fdownload = "files/album.zip";
   my @files = map { "$out/$_->{'file'}[0]" } @adata;
+
+  if ($stripexifmeta) {
+    for my $file(@files) {
+      system("exiftool", "-q", "-comment='stripped'", "-overwrite_original", "-P", "-all=", $file);
+    }
+  }
 
   if(!$p7zip) {
     # pass the file list via stdin to avoid cmdline limits
