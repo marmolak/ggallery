@@ -1,3 +1,9 @@
+This is my personal fork of fgallery with interesting patches around,
+because upstream seems to be not much active.
+I renamed it to ggallery (g is next to f) and I would like to add interesing
+patches around.
+
+
 fgallery: a modern, minimalist javascript photo gallery
 =======================================================
 
