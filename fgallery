@@ -428,18 +428,6 @@ my $name = (@ARGV < 3? undef: $ARGV[2]);
 my $absDir = rel2abs($dir) . '/';
 my $absOut = rel2abs($out) . '/';
 
-if(!-d $dir) {
-  fatal("input directory \"$dir\" does not exist");
-} elsif($absDir eq $absOut) {
-  fatal("input and output directory are the same");
-} elsif(substr($absOut, 0, length($absDir)) eq $absDir) {
-  fatal("output directory is a sub-directory of input, refusing to scan");
-} elsif(!-d $out) {
-  sys('cp', '-L', '-R', "$DATADIR/view", $out);
-} elsif(!-f "$out/index.html") {
-  fatal("output directory already exists, but doesn't look like a template copy");
-}
-
 # check tools
 if(system("identify -version >/dev/null 2>&1")
 || system("convert -version >/dev/null 2>&1")) {
@@ -468,6 +456,18 @@ if(!system("7zz -h >/dev/null 2>&1")) {
   if(system("zip -h >/dev/null 2>&1")) {
     fatal("cannot run \"zip\" (check if 7zz, 7za or zip is installed)");
   }
+}
+
+if(!-d $dir) {
+  fatal("input directory \"$dir\" does not exist");
+} elsif($absDir eq $absOut) {
+  fatal("input and output directory are the same");
+} elsif(substr($absOut, 0, length($absDir)) eq $absDir) {
+  fatal("output directory is a sub-directory of input, refusing to scan");
+} elsif(!-d $out) {
+  sys('cp', '-L', '-R', "$DATADIR/view", $out);
+} elsif(!-f "$out/index.html") {
+  fatal("output directory already exists, but doesn't look like a template copy");
 }
 
 my $tificccmd;
