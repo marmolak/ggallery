@@ -19,6 +19,7 @@ use Thread::Queue;
 use Storable qw{freeze thaw};
 use Fcntl;
 
+use File::Find::Rule;
 use File::Basename qw{fileparse};
 use File::Find qw{find};
 use File::Path qw{make_path remove_tree};
@@ -53,6 +54,7 @@ for my $dir("$RealBin/../share/fgallery", $RealBin) {
 my $mode = 0644;
 my $slim = 0;
 my $stripexifmeta = 0;
+my $minify = 0;
 my $ofile = 0;
 my $orient = 1;
 my $timesort = 1;
@@ -363,6 +365,7 @@ sub print_help
   -h, --help		this help
   --version		output current fgallery version
   -v			verbose (show commands as being executed)
+  -m			minify css, html, js, ...
   -s			slim output (no original files and downloads)
   -e                    strip exif metadata
   -i			include individual originals
@@ -408,6 +411,7 @@ my ($ret, @ARGS) = GetOptions(
   'e' => sub { $stripexifmeta = 1; },
   't' => sub { $timesort = 0; },
   'v' => sub { $verbose = 1; },
+  'm' => sub { $minify = 1; },
   'max-full=s' => sub { @maxfull = parse_wh(@_); },
   'max-thumb=s' => sub { @maxthumb = parse_wh(@_); },
   'min-thumb=s' => sub { @minthumb = parse_wh(@_); },
@@ -445,6 +449,9 @@ if($facedet && system("facedetect -h >/dev/null 2>&1")) {
 if($stripexifmeta && system("exiftool -ver >/dev/null 2>&1")) {
   fatal("cannot run \"exiftool\" (check if exiftool is installed)");
 }
+if($minify && system("minify --version >/dev/null 2>&1")) {
+  fatal("cannot run \"minify\" (check if minify is installed)");
+}
 
 my $p7zipcmd;
 if(!system("7zz -h >/dev/null 2>&1")) {
@@ -468,6 +475,14 @@ if(!-d $dir) {
   sys('cp', '-L', '-R', "$DATADIR/view", $out);
 } elsif(!-f "$out/index.html") {
   fatal("output directory already exists, but doesn't look like a template copy");
+}
+
+if ($minify) {
+  my $rule = File::Find::Rule->file()->name('*.css', '*.html', '*.js')->start($out);
+  while (defined(my $file = $rule->match()))
+  {
+    system('minify', '-o', $file, $file);
+  }
 }
 
 my $tificccmd;
